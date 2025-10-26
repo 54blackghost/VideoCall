@@ -1,14 +1,30 @@
 import express from "express";
+import cors from "cors";
 import "dotenv/config";
+import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route.js";
+import userRoutes from "./routes/user.route.js";
+import chatRoutes from "./routes/chat.route.js";
 import { connectDB } from "./lib/db.js";
 
 
 const app = express();
 const PORT = process.env.PORT;
 
- app.use("/api/auth", authRoutes)
-//console.log(signup);
+
+
+// 🔹 Middleware nécessaires
+app.use(cors());
+app.use(express.json()); // <---- Obligatoire pour lire req.body JSON
+app.use(express.urlencoded({ extended: true })); // <---- Pour lire les formulaires HTML
+app.use(cookieParser());
+
+
+
+
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/chat", chatRoutes);
 
 
 //ecouteur de port par defaut 5001
