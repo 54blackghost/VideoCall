@@ -14,7 +14,11 @@ const PORT = process.env.PORT;
 
 
 // 🔹 Middleware nécessaires
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true // allow frontend to send cookies
+}));
+
 app.use(express.json()); // <---- Obligatoire pour lire req.body JSON
 app.use(express.urlencoded({ extended: true })); // <---- Pour lire les formulaires HTML
 app.use(cookieParser());
