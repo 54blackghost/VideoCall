@@ -1,9 +1,8 @@
 import React, { use, useState } from 'react'
 import {ShipWheelIcon} from 'lucide-react'
 import { Link } from 'react-router';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { signup } from '../lib/api';
-import { useNavigate } from "react-router-dom";
+import useSignup from '../hooks/useSignup';
+
 
 
 const SignUpPage = () => {
@@ -13,22 +12,17 @@ const SignUpPage = () => {
     email: "",
     password: "",
   });
- 
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const {mutate:signupMutation, isPending, error} = useMutation({
-    mutationFn:signup,
-    onSuccess: () => {
-       queryClient.invalidateQueries({ queryKey: ["authUser"]});
-       // Rediriger vers la page d’accueil
-      navigate("/");
-    },
-     onError: (err) => {
-      console.error("Erreur d’inscription :", err);
-    },
-  });
 
+    //This how we do first time without our custom hook
+  //const queryClient = useQueryClient();
+
+  //const {mutate:signupMutation, isPending, error} = useMutation({
+  //  mutationFn:signup,
+   // onSuccess: () => 
+  //     queryClient.invalidateQueries({ queryKey: ["authUser"]}),
+  //   });
+ const {isPending, error, signupMutation} = useSignup;
 
   const handleSignup = (e) => {
     e.preventDefault();
@@ -150,7 +144,7 @@ const SignUpPage = () => {
                   <div className='text-center mt-4'>
                     <p className="text-sm">
                       Already have an account{" "}
-                      <Link to="/login" className='text-orimary hover:underline'>
+                      <Link to="/login" className='text-primary hover:underline'>
                        Sign in
                       </Link>
                     </p>
