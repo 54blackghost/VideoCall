@@ -107,7 +107,7 @@ const OnboardingPage = () => {
                     <div className='form-control '>
                       <label className='label'>
                         <span className='label-text'>Bio</span>
-                      </label>
+                      </label><br />
                       <textarea
                         name='bio'
                         placeholder='Tell others about yourself and your language learning goals'
@@ -115,7 +115,7 @@ const OnboardingPage = () => {
                         value={formState.bio}
                         onChange={(e) => setFormState({...formState, bio : e.target.value})}
                         required
-                      />
+                      ></textarea>
                     </div>
                 
                 {/*LANGUAGES*/}
@@ -131,14 +131,14 @@ const OnboardingPage = () => {
                             value={formState.nativeLanguage}
                             onChange={(e) => setFormState({...formState, nativeLanguage : e.target.value})}
                             required
-                          />
+                          >
                           <option value="">Select your native language</option>
                           {LANGUAGES.map((lang)=> (
                             <option key={`native-${lang}`} value={lang.toLowerCase()}>
                               {lang}
                             </option>
                           ))}
-                          <select/>
+                          </select>
                       </div>  
 
                       {/*LEARNING LANGUAGE*/}
@@ -152,14 +152,14 @@ const OnboardingPage = () => {
                             value={formState.learningLanguage}
                             onChange={(e) => setFormState({...formState, learningLanguage: e.target.value})}
                             required
-                          />
+                          >
                           <option value="">Select language you're learning</option>
                           {LANGUAGES.map((lang)=> (
                             <option key={`learning-${lang}`} value={lang.toLowerCase()}>
                               {lang}
                             </option>
                           ))}
-                          <select/>
+                          </select>
                       </div>
                     </div>
 

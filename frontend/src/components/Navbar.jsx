@@ -3,7 +3,7 @@ import useAuthUser from '../hooks/useAuthUser';
 import { Link, useLocation } from 'react-router';
 import { BellIcon, LogOutIcon, ShipWheelIcon } from 'lucide-react';
 import ThemeSelector from './ThemeSelector';
-import useLogout from '../hooks/useLogout';
+import useLogout from "../hooks/useLogout";
 
 
 
@@ -20,7 +20,8 @@ const Navbar = () => {
    //    mutationFn: logout,
    //    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"]}),
    //});
-    useLogout();
+   const { logoutMutation, isPending, error } = useLogout();
+
 
 
     return (
@@ -57,7 +58,7 @@ const Navbar = () => {
                     </div>
 
                     {/*Logout button*/}
-                     <button className="btn btn-ghost btn-circle">
+                     <button onClick={() => logoutMutation()} className="btn btn-ghost btn-circle">
                         <LogOutIcon className='h-6 w-6 text-base-content opacity-70'/>
                     </button>
                 </div>

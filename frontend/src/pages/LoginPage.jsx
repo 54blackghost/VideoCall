@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import {  ShipWheelIcon } from 'lucide-react';
 import { Link } from 'react-router';
-import useLogin from '../hooks/useLogin.js';
+import useLogin from "../hooks/useLogin";
+
 
 const LoginPage = () => {
 
@@ -22,7 +23,7 @@ const LoginPage = () => {
    //     queryClient.invalidateQueries({ queryKey: ["authUser"]});
   //   },
    //});
-  const {loginMutation,   isPending, error} = useLogin;
+  const {loginMutation,   isPending, error} = useLogin();
 
    const handleLogin = (e) => {
     e.preventDefault();

@@ -14,14 +14,15 @@ const ThemeSelector = () => {
         </button>
 
         <div 
-        tabIndex={0}
+            tabIndex={0}
             className="dropdown-content mt-2 p-1 shadow-2xl bg-base-200 backdrop-blur-lg roundrd-2xl 
             w-56 border border-base-content/10 max-h-80 overfow-y-auto" 
-        />
+        >
            
            <div className="space-y-1">
                {THEMES.map((themeOption) => (
                <button 
+                key={themeOption.name}   // ← clé ajoutée ici
                 className={`
                     w-full px-4 py-3 rounded-xl flex items-center gap-3 transition-colors" 
                     ${
@@ -48,7 +49,7 @@ const ThemeSelector = () => {
                ))}
            </div>
 
-
+    </div>
        </div>
   )
 }
