@@ -111,13 +111,17 @@ export async function login(req, res){
         res.cookie("jwt", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true, //revent XSS attacks
-            saneSite: "strict", //prevent CSRF attacks
-            secure: process.env.NODE_ENV === "production"
+            //sameSite: "strict", //prevent CSRF attacks in production
+            //secure: process.env.NODE_ENV === "production"  // in production 
+            sameSite: "lax",
+            path: "/", 
+            secure: false,
+
         });
 
 
 
-        res.status(200).json({su: true, user});
+        res.status(200).json({success: true, user});
     } catch (error) {
         console.log("Error in login controller", error.message);
         res.status(500).json({message:"Internal Server Error"});

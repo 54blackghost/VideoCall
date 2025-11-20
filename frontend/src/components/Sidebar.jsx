@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router';
 import { BellIcon, HomeIcon, ShipWheelIcon, UsersIcon } from 'lucide-react';
 
 const Sidebar = () => {
-    const {authUser} = useAuthUser;
+    const {authUser} = useAuthUser();
     const location = useLocation();
     const currentPath = location.pathname;
 
@@ -59,7 +59,7 @@ const Sidebar = () => {
             <div className="flex items-center gap-3">
                 <div className="avatar">
                     <div className="w-10 rounded-full">
-                        <img src={authUser?.profilePic} alt="User Avatar" />
+                        <img src={authUser?.profilePic} alt="User Avatar" rel='noreferrer' />
                     </div>
                 </div>
                 <div className="flex-1">

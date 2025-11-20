@@ -27,6 +27,7 @@ const LoginPage = () => {
 
    const handleLogin = (e) => {
     e.preventDefault();
+    console.log("Login data:", loginData);
     loginMutation(loginData);
   };
 
@@ -92,6 +93,8 @@ const LoginPage = () => {
                         required
                       />
                     </div>
+                    
+
                    <button className='btn btn-primary w-full' type="submit" disabled={isPending}>
                     {isPending ? (
                       <>
