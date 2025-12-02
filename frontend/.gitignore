@@ -1,3 +1,8 @@
+# 🚫 Ne jamais commit .env ou credentials
+.env
+.env.local
+credentials.json
+
 # Logs
 logs
 *.log

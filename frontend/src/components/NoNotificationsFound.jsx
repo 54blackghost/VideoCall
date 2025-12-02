@@ -1,10 +1,10 @@
 import { BellIcon } from 'lucide-react'
-import React from 'react'
 
-const NoNotificationsFound = () => {
+
+function NoNotificationsFound  ()  {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="size-16 rounded-full bg-base 300 flex items-center justify-center mb-4">
+        <div className="size-16 rounded-full bg-base-300 flex items-center justify-center mb-4">
             <BellIcon className='size-8 text-base-content opacity-40'/>
         </div>
         <h3 className="text-lg font-semibold mb-2">No notifications yet</h3>
@@ -12,7 +12,7 @@ const NoNotificationsFound = () => {
             When you receive friend requests or message, they'll apear here.
         </p>
     </div>
-  )
+  );
 }
 
 export default NoNotificationsFound;

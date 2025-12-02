@@ -16,13 +16,13 @@ export const login = async (loginData) => {
 
 
 export const logout = async () => {
-       const response = await axiosInstance.post("/auth/logout");
+       const response = await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
        return response.data;
 };
 
 export const getAuthUser = async () => {
    try {
-       const res = await axiosInstance.get("/auth/me");
+       const res = await axiosInstance.get ("/auth/me");
        return res.data;
    } catch (error) {
        console.log("Error in getAuthUser:", error);
@@ -68,5 +68,11 @@ export async function getFriendRequest() {
 
 export async function acceptFriendRequest(requestId) {
        const response = await axiosInstance.get(`/users/friend-request/${requestId}/accept`);
+       return response.data;
+}
+
+
+export async function getStreamToken() {
+       const response = await axiosInstance.get('/chat/token');
        return response.data;
 }
