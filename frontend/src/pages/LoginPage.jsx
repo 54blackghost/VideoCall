@@ -27,7 +27,6 @@ const LoginPage = () => {
 
    const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Login data:", loginData);
     loginMutation(loginData);
   };
 
