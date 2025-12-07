@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stream-io/video-react-sdk": "^1.27.2",
     "@tailwindcss/vite": "^4.1.16",
     "@tanstack/react-query": "^5.90.7",
     "axios": "^1.13.2",
