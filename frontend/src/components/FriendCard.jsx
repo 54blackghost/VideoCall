@@ -51,7 +51,7 @@ export function getLanguageFlag(language) {
     if (countryCode) {
         return (
             <img 
-               src={`https://flagcnd.com/24x18/${countryCode}.png`}
+               src={`https://flagcdn.com/24x18/${countryCode}.png`}
                alt={`${langLower} flag`} 
                className='h-3 mr-1 inline-block'
             />

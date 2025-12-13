@@ -10,8 +10,8 @@ const  router = express.Router();
 router.use(protectRoute);
 
 
-router.get("/",getRecommendedUser);
-router.get("/", getMyFriends);
+router.get("/", getRecommendedUser);
+router.get("/friends",  getMyFriends);
 
 
 router.post("/friend-request/:id", sendFriendRequest);
