@@ -7,7 +7,15 @@ const useLogout = () => {
     const queryClient = useQueryClient();
     const { mutate: logoutMutation, isPending, error  } = useMutation({
         mutationFn:logout,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+        onSuccess: () =>  {
+      console.log("✅ Déconnexion réussie");
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      // Optionnel : rediriger après logout
+      // window.location.href = '/login';
+    },
+     onError: (error) => {
+      console.error("❌ Erreur lors de la déconnexion:", error);
+    },
     });
     return {logoutMutation,isPending, error, };
  
