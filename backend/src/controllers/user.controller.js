@@ -4,13 +4,15 @@ import User from "../models/User.js";
 export async function getRecommendedUser(req, res) {
     try {
         const currentUserId = req.user.id;
-        const currentUser = req.user
+        //const currentUser = req.user
+        const friendsList = req.user.friends || []; // Sécurité si friends est indéfini
 
         
         const recommendedUsers = await User.find({
           _id: {
-            $ne: currentUserId._id,
-            $nin: currentUser.friends,
+            $ne: currentUserId,
+            //$nin: currentUser.friends,
+            $nin: friendsList        // Exclure ceux qui sont déjà amis
           },
           isOnboarded: true,
         })
@@ -93,29 +95,29 @@ export async function acceptFriendRequest(req, res) {
         const requestId = req.params.id;
 
 
-        const friendResquet = await FriendRequest.findById(requestId);
+        const friendRequet = await FriendRequest.findById(requestId);
          
 
-        if (!friendResquet) {
+        if (!friendRequet) {
             return res.status(404).json({message: "Friend request not found"});
         }
 
            //verify the current user is the recipient
-           if (friendResquet.recipient.toString() !== req.user.id ) {
+           if (friendRequet.recipient.toString() !== req.user.id ) {
               return res.status(403).json({message: "You are not authorized to accept this request"});
            }
 
-           friendResquet.status = "accepted";
-           await friendResquet.save();
+           friendRequet.status = "accepted";
+           await friendRequet.save();
 
            //add each user to the other's friends array
            //$addToSet: adds elements to an array only if they do not already exist
-           await User.findByIdAndUpdate(friendResquet.sender, {
-            $addToSet: {friends: friendResquet.recipient},
+           await User.findByIdAndUpdate(friendRequet.sender, {
+            $addToSet: {friends: friendRequet.recipient},
            });
 
-            await User.findByIdAndUpdate(friendResquet.recipient, {
-            $addToSet: {friends: friendResquet.sender},
+            await User.findByIdAndUpdate(friendRequet.recipient, {
+            $addToSet: {friends: friendRequet.sender},
            });
 
            res.status(200).json({message: "Friend request accepted"});
