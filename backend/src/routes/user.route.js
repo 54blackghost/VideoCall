@@ -14,11 +14,11 @@ router.get("/", getRecommendedUser);
 router.get("/friends",  getMyFriends);
 
 
-router.post("/friend-request/:id", sendFriendRequest);
-router.post("/friend-request/:id/accept", acceptFriendRequest);
+router.post("/friend-request/:id",protectRoute, sendFriendRequest);
+router.post("/friend-request/:id/accept", protectRoute, acceptFriendRequest);
 
-router.get("/friend-requests", getFriendRequests );
-router.get("/outgoing-friend-requests", getOutgoingFriendReqs);
+router.get("/friend-requests", protectRoute, getFriendRequests );
+router.get("/outgoing-friend-requests", protectRoute, getOutgoingFriendReqs);
 
 
 export default router;

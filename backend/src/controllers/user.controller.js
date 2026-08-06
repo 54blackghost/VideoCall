@@ -46,19 +46,26 @@ export async function sendFriendRequest(req, res) {
         const { id: recipientId} = req.params;
 
         //prevent sending req to youself
-        if (myId === recipientId) {
+        if (myId.toString() === recipientId) {
             return res.status(400).json({message: "You can't send friend request to yourself"});
+            console.log({myId: myId.toString(), recipientId});
         }
 
         const recipient = await User.findById(recipientId);
         if (!recipient) {
             return res.status(404).json({message: "Recipient not found"});
+            console.log("Recipient:", recipient);
         }
  
         //check if user is already friends
-        if (recipient.friends.includes(myId)) {
-            return res.status(400).json({message: "You are already friends with this user"});
-        }
+        const alreadyFriends = recipient.friends.some(friendId =>
+                friendId.equals(myId)
+            );
+            
+            if (alreadyFriends) {
+                return res.status(400).json({message: "You are already friends with this user"});
+                console.log("Friends:", recipient.friends);
+            }
 
 
         //check if a req already exists
@@ -130,14 +137,14 @@ export async function acceptFriendRequest(req, res) {
 export async function getFriendRequests(req, res) {
    try {
      const incomingReqs = await FriendRequest.find({
-        sender: req.user.id,
+        recipient: req.user.id,
         status: "pending",
      }).populate("sender", "fullName profilePic nativeLanguage learningLanguage");
 
      const acceptReqs = await FriendRequest.find({
-        sender: req.user.id,
+        recipient: req.user.id,
         status: "accepted",
-     }).populate("recipient", "fullName profilePic");
+     }).populate("sender", "fullName profilePic");
 
      res.status(200).json({incomingReqs, acceptReqs});
    } catch (error) {
