@@ -23,6 +23,7 @@
     "stream-chat": "^9.26.0",
     "stream-chat-react": "^13.13.0",
     "tailwindcss": "^4.1.16",
+    "vercel": "^58.9.5",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
