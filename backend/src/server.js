@@ -2,9 +2,13 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
+import path from "path";
+
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import chatRoutes from "./routes/chat.route.js";
+
+
 import { connectDB } from "./lib/db.js";
 
 
@@ -12,10 +16,13 @@ const app = express();
 const PORT = process.env.PORT;
 
 
+const __dirname = path.resolve(); // <---- Pour obtenir le chemin absolu du répertoire courant
+
+
 
 // 🔹 Middleware nécessaires
 app.use(cors({
-     origin: process.env.CLIENT_URL, // allow frontend to access backend
+     origin: "http://localhost:5173", // allow frontend to access backend
     credentials: true // allow frontend to send cookies
 }));
 
@@ -29,6 +36,22 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
+
+
+
+
+if (process.env.NODE_ENV === "production") {
+     const frontendPath = path.join(
+        __dirname,
+        "../frontend/dist"
+    );
+
+    app.use(express.static(frontendPath)); // <---- Pour servir les fichiers statiques du frontend
+    
+    app.get("/*splat", (req, res) => {
+        res.sendFile(path.join(frontendPath, "index.html"));
+    }); 
+}
 
 
 //ecouteur de port par defaut 5001
