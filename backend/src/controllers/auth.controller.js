@@ -1,7 +1,7 @@
-import { json } from "express";
+
 import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/User.js";
-import jwt from "jsonwebtoken";
+import { clerkClient } from "@clerk/express";
 
 
 export async function signup(req, res){
@@ -94,7 +94,7 @@ export async function login(req, res){
 
 
         //teste si un user existe
-        const user = await User.findOne({email});
+        const user = await User.findOne({ clerkId: req.clerkUserId,});
 
         if (!user) return res.status(401).json({message: "Invalid email or password"}); 
 
@@ -137,48 +137,128 @@ export function logout(req, res){
     res.status(200).json({success: true, message: "Logout successful"});
 }
 
-export async function onboard(req, res) {
-    try {
-        const userId = req.user._id;
-        const {fullName, bio, nativeLanguage, learningLanguage, location} = req.body;
+export const onboard = async (req, res) => {
+  try {
+    const {
+      fullName,
+      bio,
+      nativeLanguage,
+      learningLanguage,
+      location,
+    } = req.body;
 
-        if (!fullName || !bio || !nativeLanguage  || !learningLanguage || !location) {
-            return res.status(400).json({
-                message: "All fields are required",
-                missingFields: {
-                    fullName: !fullName,
-                    bio: !bio,
-                    nativeLanguage: !nativeLanguage,
-                    learningLanguage: !learningLanguage,
-                    location: !location
-                }.filter(Boolean),
-        });
-        }
+    const user = await User.findOne({
+      clerkId: req.clerkUserId,
+    });
 
-
-        //permet de modifier un user profile
-        const updatedUser =  await User.findByIdAndUpdate(userId, {
-            ...req.body,
-            isOnboarded: true,
-        }, {new:true})
-
-
-        if (!updatedUser) return res.status(404).json({message: "User nnot found"});
-        try {
-            await upsertStreamUser({
-                id: updatedUser._id.toString(),
-                name: updatedUser.fullName,
-                image: updatedUser.profilePic || " ",
-            });
-            console.log(`Stream user updated for ${updatedUser.fullName}`); 
-        } catch (streamError) {
-            console.log("Error updaring Stream user during onboarding", streamError.message);
-        }
-
-
-         res.status(200).json({success: true, user: updatedUser});
-    } catch (error) {
-        console.error("Onboarding erroor:", error);
-        res.status(500).json({message: "Internal Server Error"});
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
-}
+
+    user.fullName = fullName;
+    user.bio = bio;
+    user.nativeLanguage = nativeLanguage;
+    user.learningLanguage = learningLanguage;
+    user.location = location;
+    user.isOnboarded = true;
+
+    await user.save();
+
+    await upsertStreamUser({
+      id: req.clerkUserId,
+      name: user.fullName,
+      image: user.profilePic,
+    });
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.error("Onboarding error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const syncClerkUser = async (req, res) => {
+  try {
+    const clerkUserId = req.clerkUserId;
+
+    const clerkUser = await clerkClient.users.getUser(clerkUserId);
+
+    if (!clerkUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Clerk user not found",
+      });
+    }
+
+    const email = clerkUser.emailAddresses?.[0]?.emailAddress;
+
+    const fullName =
+      [clerkUser.firstName, clerkUser.lastName]
+        .filter(Boolean)
+        .join(" ") ||
+      clerkUser.username ||
+      "User";
+
+    const profilePic = clerkUser.imageUrl || "";
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "No email associated with Clerk account",
+      });
+    }
+
+    let user = await User.findOne({
+      clerkId: clerkUserId,
+    });
+
+    if (!user) {
+      user = await User.findOne({
+        email: email.toLowerCase(),
+      });
+    }
+
+    if (!user) {
+      user = await User.create({
+        clerkId: clerkUserId,
+        fullName,
+        email: email.toLowerCase(),
+        profilePic,
+        isOnboarded: false,
+      });
+
+      console.log("MongoDB user created:", user._id);
+    } else {
+      user.clerkId = clerkUserId;
+      user.fullName = fullName;
+      user.email = email.toLowerCase();
+      user.profilePic = profilePic;
+
+      await user.save();
+
+      console.log("MongoDB user synchronized:", user._id);
+    }
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.error("syncClerkUser error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to synchronize Clerk user",
+    });
+  }
+};

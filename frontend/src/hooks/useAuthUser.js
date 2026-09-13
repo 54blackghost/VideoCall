@@ -1,15 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAuthUser } from "../lib/api";
+import { useAuth, useUser } from "@clerk/react";
+import { syncClerkUser } from "../lib/clerkApi";
 
+const useAuthUser = () => {
+  const { isLoaded, isSignedIn, getToken } = useAuth();
+  const { user: clerkUser } = useUser();
 
+  const authUser =useQuery({
+  queryKey: ["friends"],
+  queryFn: () => getUserFriends(getToken),
+});
 
-const useAuthUser = () =>{
-   const authUser = useQuery({
-     queryKey: ["authUser"],
-     queryFn:getAuthUser,
-     retry: false, //auth check
-  });
+  return {
+    isLoading:
+      !isLoaded ||
+      (isSignedIn && authUser.isLoading),
 
-  return {isLoading: authUser.isLoading, authUser: authUser.data?.user};
-}
+    authUser: authUser.data?.user || null,
+
+    clerkUser,
+
+    isSignedIn,
+  };
+};
+
 export default useAuthUser;

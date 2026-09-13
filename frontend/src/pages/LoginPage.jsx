@@ -1,8 +1,8 @@
+
 import React, { useState } from 'react'
 import {  ShipWheelIcon } from 'lucide-react';
 import { Link } from 'react-router';
-import useLogin from "../hooks/useLogin";
-
+import { SignInButton } from "@clerk/react";
 
 const LoginPage = () => {
 
@@ -11,23 +11,9 @@ const LoginPage = () => {
       password: "",
     });
  
-  //This how we do first time without our custom hook
- // const queryClient = useQueryClient();
- //const {
-  //  mutate:loginMutation,  
-  //  isPending, 
-  //  error
-  //  } = useMutation({
-  //  mutationFn:login,
-  //   onSuccess: () => {
-   //     queryClient.invalidateQueries({ queryKey: ["authUser"]});
-  //   },
-   //});
-  const {loginMutation,   isPending, error} = useLogin();
-
    const handleLogin = (e) => {
     e.preventDefault();
-    loginMutation(loginData);
+    SignInButton(loginData);
   };
 
   return (
@@ -45,12 +31,7 @@ const LoginPage = () => {
               </span>
             
 
-            {/* ERROR MESSAGE IF ANY*/}
-            {error && (
-              <div className='alert alert-error mb-4'>
-                <span>{error.response.data.message}</span>
-              </div>  
-            )}
+            
           </div>
 
           <div className='w-full'>
@@ -92,18 +73,41 @@ const LoginPage = () => {
                         required
                       />
                     </div>
-                    
+                  
+ 
+                <p className="text-sm bg-center">──────── Or ────────</p>
 
-                   <button className='btn btn-primary w-full' type="submit" disabled={isPending}>
-                    {isPending ? (
-                      <>
-                      <span className='loading loading-spinner loading-xs'></span>
-                      Signing in...
-                      </>
-                    ) : (
-                      "Sign In"
-                    )}
-                  </button>
+                  <SignInButton mode="modal">
+                    <button
+                      type="button"
+                      className="btn btn-outline w-full"
+                    >
+                      <svg
+                        className="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill="#4285F4"
+                          d="M21.35 12.23c0-.79-.07-1.55-.23-2.23H12v4.22h5.24a4.48 4.48 0 0 1-1.95 2.94v2.45h3.16c1.85-1.7 2.9-4.2 2.9-7.38z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 21.6c2.65 0 4.87-.88 6.49-2.39l-3.16-2.45c-.88.59-2 .94-3.33.94-2.56 0-4.73-1.73-5.51-4.06H3.22v2.53A9.8 9.8 0 0 0 12 21.6z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M6.49 13.64A5.9 5.9 0 0 1 6.18 12c0-.57.1-1.13.31-1.64V7.83H3.22A9.8 9.8 0 0 0 2.2 12c0 1.58.38 3.08 1.02 4.17l3.27-2.53z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 6.3c1.44 0 2.73.5 3.75 1.48l2.81-2.81C16.86 3.39 14.65 2.4 12 2.4a9.8 9.8 0 0 0-8.78 5.43l3.27 2.53C7.27 8.03 9.44 6.3 12 6.3z"
+                        />
+                      </svg>
+
+                      Continuer avec Google
+                    </button>
+                  </SignInButton>
 
                   <div className='text-center mt-4'>
                     <p className="text-sm">

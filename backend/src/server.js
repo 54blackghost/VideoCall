@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
-import cookieParser from "cookie-parser";
 import path from "path";
+import { clerkMiddleware } from "@clerk/express";
 
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
@@ -13,6 +13,9 @@ import { connectDB } from "./lib/db.js";
 
 
 const app = express();
+
+app.use(clerkMiddleware());
+
 const PORT = process.env.PORT;
 
 
@@ -28,10 +31,11 @@ app.use(cors({
 
 app.use(express.json()); // <---- Obligatoire pour lire req.body JSON
 app.use(express.urlencoded({ extended: true })); // <---- Pour lire les formulaires HTML
-app.use(cookieParser());
 
 
 
+// Clerk
+app.use(clerkMiddleware());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);

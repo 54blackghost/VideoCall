@@ -1,24 +1,37 @@
-import express from  "express";
-import { protectRoute } from "../middleware/auth.middleware.js";
-import { acceptFriendRequest, getFriendRequests, getMyFriends, getOutgoingFriendReqs, getRecommendedUser, sendFriendRequest } from "../controllers/user.controller.js";
+import express from "express";
 
+import { protectClerkRoute } from "../middleware/clerkAuth.middleware.js";
 
+import {
+  acceptFriendRequest,
+  getFriendRequests,
+  getMyFriends,
+  getOutgoingFriendReqs,
+  getRecommendedUser,
+  sendFriendRequest,
+} from "../controllers/user.controller.js";
 
-const  router = express.Router();
+const router = express.Router();
 
-//apply auth middleware to all routes
-router.use(protectRoute);
-
+// Toutes les routes /users sont protégées par Clerk
+router.use(protectClerkRoute);
 
 router.get("/", getRecommendedUser);
-router.get("/friends",  getMyFriends);
 
+router.get("/friends", getMyFriends);
 
-router.post("/friend-request/:id",protectRoute, sendFriendRequest);
-router.post("/friend-request/:id/accept", protectRoute, acceptFriendRequest);
+router.post("/friend-request/:id", sendFriendRequest);
 
-router.get("/friend-requests", protectRoute, getFriendRequests );
-router.get("/outgoing-friend-requests", protectRoute, getOutgoingFriendReqs);
+router.post(
+  "/friend-request/:id/accept",
+  acceptFriendRequest
+);
 
+router.get("/friend-requests", getFriendRequests);
+
+router.get(
+  "/outgoing-friend-requests",
+  getOutgoingFriendReqs
+);
 
 export default router;

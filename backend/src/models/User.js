@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+
 
 //creation de la table user
 const userSchema = new mongoose.Schema({
+    clerkId: {
+    type: String,
+    unique: true,
+    sparse: true,
+    },
    fullName:{
     type:String,
     require: true,
@@ -53,28 +58,6 @@ const userSchema = new mongoose.Schema({
 
 
 
-//perder hasher le password avant de le save
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password"))return next();
-
-    try {
-        //focntion qui perment de hasher les password
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-
-        next();
-    } catch (error) {
-        next(error)
-    }
-})
-
-
-
-//teste si le password est le meme
-userSchema.methods.matchPassword = async function (enteredPassword) {
-    const isPasswordCorrect = await bcrypt.compare(enteredPassword, this.password);
-    return isPasswordCorrect;
-}
 
 const User = mongoose.model("User", userSchema);
 

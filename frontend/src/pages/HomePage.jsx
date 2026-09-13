@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
-import { getOutgoingFriendReqs, getRecommendedeUser, getUserFriends, sendFriendRequest } from '../lib/api';
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from 'lucide-react';
 import { Link } from 'react-router';
 import FriendCard, { getLanguageFlag } from '../components/FriendCard.jsx';
